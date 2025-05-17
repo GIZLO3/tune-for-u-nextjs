@@ -1,14 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import Form from "next/form";
 import { useState } from "react";
+import { useActionState } from "react";
+import { createPost } from "@/app/actions";
 
 export default function PostCreateForm() {
-  const [postText, setPostText] = useState("");
   const maxPostLength = 250;
+  const [postText, setPostText] = useState("");
 
-  async function formAction(formData: FormData) {}
+  const initialState = { success: false, error: null as string | null };
+  const [formState, formAction, isPending] = useActionState(
+    createPost,
+    initialState
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= maxPostLength) {
@@ -27,7 +32,7 @@ export default function PostCreateForm() {
         height={45}
         className="rounded-full h-min"
       />
-      <Form action={formAction} className="w-full py-1">
+      <form action={formAction} className="w-full py-1">
         <textarea
           name="post_content"
           id="post_content"
@@ -36,29 +41,29 @@ export default function PostCreateForm() {
                rounded resize-none focus:bg-neutral-900/30 p-1 text-lg"
           placeholder="Dodaj wpis..."
           rows={1}
-          value={postText}
           minLength={1}
           maxLength={maxPostLength}
         />
+        {formState.error && (
+          <p className="text-red-500 text-sm mt-1">{formState.error}</p>
+        )}
         <div className="flex border-t py-1 items-center justify-between">
-          <div className="flex gap-5 items-center">
-            <p>
-              {postText.length} / {maxPostLength}
-            </p>
-            <button
-              type="submit"
-              disabled={postText.length === 0}
-              className={`px-3 py-1 rounded-full font-medium ${
-                postText.length === 0
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-red-500 hover:bg-red-600"
-              }`}
-            >
-              Opublikuj wpis
-            </button>
-          </div>
+          <p>
+            {postText.length} / {maxPostLength}
+          </p>
+          <button
+            type="submit"
+            disabled={isPending}
+            className={`px-3 py-1 rounded-full font-medium ${
+              isPending
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-red-500 hover:bg-red-600"
+            }`}
+          >
+            {isPending ? "Publikowanie..." : "Opublikuj wpis"}
+          </button>
         </div>
-      </Form>
+      </form>
     </div>
   );
 }
