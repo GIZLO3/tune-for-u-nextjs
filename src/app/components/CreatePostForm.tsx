@@ -7,7 +7,7 @@ import { createPost } from "@/app/actions";
 
 export default function PostCreateForm() {
   const maxPostLength = 250;
-  const [postText, setPostText] = useState("");
+  const [postContent, setPostContent] = useState("");
 
   const initialState = { success: false, error: null as string | null };
   const [formState, formAction, isPending] = useActionState(
@@ -19,7 +19,7 @@ export default function PostCreateForm() {
     if (e.target.value.length <= maxPostLength) {
       e.target.style.height = "auto";
       e.target.style.height = `${e.target.scrollHeight}px`;
-      setPostText(e.target.value);
+      setPostContent(e.target.value);
     }
   };
 
@@ -42,6 +42,7 @@ export default function PostCreateForm() {
           placeholder="Dodaj wpis..."
           rows={1}
           minLength={1}
+          value={postContent}
           maxLength={maxPostLength}
         />
         {formState.error && (
@@ -49,7 +50,7 @@ export default function PostCreateForm() {
         )}
         <div className="flex border-t py-1 items-center justify-between">
           <p>
-            {postText.length} / {maxPostLength}
+            {postContent.length} / {maxPostLength}
           </p>
           <button
             type="submit"
