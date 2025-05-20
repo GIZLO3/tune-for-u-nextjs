@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "./lib/prisma";
+import prisma from "./_lib/prisma";
 
 export async function createPost(
   prevState: { success: boolean; error: string | null },
