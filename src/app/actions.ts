@@ -16,11 +16,29 @@ export async function createPost(
     return { success: false, error: "Wpis jest za długi" };
   }
 
-  await prisma.post.create({
-    data: {
-      content,
-    },
-  });
+  try {
+    await prisma.post.create({
+      data: {
+        content,
+      },
+    });
+    return { success: true, error: null };
+  } catch (e) {
+    console.error("Failed to create post:", e);
+    return { success: false, error: "Nie udało się utworzyć wpisu." };
+  }
+}
 
-  return { success: true, error: null };
+export async function getPosts() {
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return posts;
+  } catch (e) {
+    console.error("Failed to fetch posts:", e);
+    return [];
+  }
 }

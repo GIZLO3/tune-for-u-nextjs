@@ -1,5 +1,3 @@
-// app/api/posts/route.ts
-
 import prisma from "@/app/_lib/prisma";
 import { NextResponse } from "next/server";
 
